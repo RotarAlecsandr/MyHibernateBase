@@ -1,17 +1,13 @@
 package org.example.Repository;
 
 import org.example.model.Users;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.example.model.UsersAddress;
+import org.hibernate.query.Query;
 import java.util.List;
 
-public class WorkWithBase {
-    public void selectUserById(int number){
-        Configuration configuration = new Configuration().addAnnotatedClass(Users.class);
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
+public class WorkWithBase implements Pdu {
 
+    public void selectUserById(int number) {
         try {
             session.beginTransaction();
             Users user = session.get(Users.class, number);
@@ -24,7 +20,8 @@ public class WorkWithBase {
             System.out.print(", lastName: " + last);
             System.out.println(", age: " + age);
             session.getTransaction().commit();
-        } catch (Exception e){
+        } catch (Throwable e){
+            session.getTransaction().rollback();
             e.getStackTrace();
         } finally {
             session.close();
@@ -33,15 +30,14 @@ public class WorkWithBase {
     }
 
     public void addingUsers(Users users){
-        Configuration configuration = new Configuration().addAnnotatedClass(Users.class);
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-
         try {
             session.beginTransaction();
             session.save(users);
             System.out.println("Пользователь добавлен в базу данных.");
             session.getTransaction().commit();
+        } catch (Throwable e){
+            session.getTransaction().rollback();
+            e.getStackTrace();
         } finally {
             session.close();
             sessionFactory.close();
@@ -49,10 +45,6 @@ public class WorkWithBase {
     }
 
     public void userUpdate(int number, String name){
-        Configuration configuration = new Configuration().addAnnotatedClass(Users.class);
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-
         try {
             session.beginTransaction();
             Users user = session.get(Users.class, number);
@@ -66,6 +58,9 @@ public class WorkWithBase {
             System.out.print(", lastName: " + last);
             System.out.println(", age: " + age);
             session.getTransaction().commit();
+        } catch (Throwable e){
+            session.getTransaction().rollback();
+            e.getStackTrace();
         } finally {
             session.close();
             sessionFactory.close();
@@ -73,10 +68,6 @@ public class WorkWithBase {
     }
 
     public void deleteUser(int number){
-        Configuration configuration = new Configuration().addAnnotatedClass(Users.class);
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-
         try {
             session.beginTransaction();
             Users user = session.get(Users.class, number);
@@ -90,6 +81,9 @@ public class WorkWithBase {
             System.out.print(", lastName: " + last);
             System.out.println(", age: " + age);
             session.getTransaction().commit();
+        } catch (Throwable e){
+            session.getTransaction().rollback();
+            e.getStackTrace();
         } finally {
             session.close();
             sessionFactory.close();
@@ -97,17 +91,17 @@ public class WorkWithBase {
     }
 
     public void selectAllUsers(){
-        Configuration configuration = new Configuration().addAnnotatedClass(Users.class);
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-
         try {
             session.beginTransaction();
             List<Users> usersList = session.createQuery("FROM Users").getResultList();
             System.out.println("Показанны все пользователи базы данных.");
-            for(Users users : usersList)
-            System.out.println(users);
+            usersList
+                    .stream()
+                    .forEach(System.out::println);
             session.getTransaction().commit();
+        } catch (Throwable e){
+            session.getTransaction().rollback();
+            e.getStackTrace();
         } finally {
             session.close();
             sessionFactory.close();
@@ -115,18 +109,52 @@ public class WorkWithBase {
     }
 
     public void deleteAllUsers(){
-        Configuration configuration = new Configuration().addAnnotatedClass(Users.class);
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-
         try {
             session.beginTransaction();
             session.createQuery("DELETE FROM Users").executeUpdate();
             System.out.println("Удаленны все пользователи базы данных.");
             session.getTransaction().commit();
+        } catch (Throwable e){
+            session.getTransaction().rollback();
+            e.getStackTrace();
         } finally {
             session.close();
             sessionFactory.close();
+        }
+    }
+
+    public void addingUsersAddress(Users users, UsersAddress usersAddress){
+        try {
+            session.beginTransaction();
+            session.save(users);
+            System.out.println("Пользователь и адресс пользователя добавлены в базу данных.");
+            users.setUsersAddress(usersAddress);
+            session.getTransaction().commit();
+        } catch (Throwable e){
+            session.getTransaction().rollback();
+            e.getStackTrace();
+        } finally {
+            session.close();
+            sessionFactory.close();
+        }
+    }
+
+    public void selectUserHouse(int number){
+         try {
+            session.beginTransaction();
+            Query query = session.createQuery("FROM UsersAddress where house = :paramName");
+            query.setParameter("paramName", number);
+            List<UsersAddress> users = query.list();
+            users
+                    .stream()
+                    .forEach(System.out::println);
+            session.getTransaction().commit();
+        } catch (Throwable e){
+             session.getTransaction().rollback();
+             e.getStackTrace();
+         } finally {
+             session.close();
+             sessionFactory.close();
         }
     }
 }
