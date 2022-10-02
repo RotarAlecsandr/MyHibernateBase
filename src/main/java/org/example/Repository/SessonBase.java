@@ -6,7 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public interface Pdu {
+abstract class SessionBase {
     Configuration configuration = new Configuration().addAnnotatedClass(Users.class)
             .addAnnotatedClass(UsersAddress.class);
     SessionFactory sessionFactory = configuration.buildSessionFactory();

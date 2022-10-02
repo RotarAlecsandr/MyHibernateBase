@@ -11,22 +11,20 @@ public class App {
         Users users2 = new Users("Sidorov", "Fedor", 23);
         Users users3 = new Users("Kozlov", "Nick", 40);
         Users users4 = new Users("Petrov", "Stepan", 22);
-        Users users5 = new Users("Rotar", "Sashs", 32);
 
-        UsersAddress usersAddress1 = new UsersAddress("Minsk", "Gorkogo", 12);
-        UsersAddress usersAddress2 = new UsersAddress("Gomel", "Pyshkina", 3);
-        UsersAddress usersAddress3 = new UsersAddress("Brest", "Moskovskaya", 30);
-        UsersAddress usersAddress4 = new UsersAddress("Bereza", "Lybarscogo", 30);
-        UsersAddress usersAddress5 = new UsersAddress("Bereza", "Lenina", 33);
+        UsersAddress usersAddress1 = new UsersAddress(users1, "Minsk", "Gorkogo", 12);
+        UsersAddress usersAddress2 = new UsersAddress(users2, "Gomel", "Pyshkina", 3);
+        UsersAddress usersAddress3 = new UsersAddress(users3, "Brest", "Moskovskaya", 30);
+        UsersAddress usersAddress4 = new UsersAddress(users4, "Bereza", "Lybarscogo", 30);
 
         WorkWithBase workWithBase = new WorkWithBase();
-        //workWithBase.selectUserById(10);
-        //workWithBase.addingUsers(users1);
-        //workWithBase.userUpdate(15, "Stepan");
-        //workWithBase.deleteUser(15);
         //workWithBase.selectAllUsers();
-        //workWithBase.deleteAllUsers();
-        //workWithBase.addingUsersAddress(users1, usersAddress1);
+        //workWithBase.deleteUser(1);
         //workWithBase.selectUserHouse(30);
+        //workWithBase.userUpdate(1, "Vanya");
+        //workWithBase.addingUsers(users5);
+        //workWithBase.selectUserById(1);
+        //workWithBase.addingUsersAddress(usersAddress5, 6);
+        //workWithBase.deleteAllUsers();
     }
 }

@@ -4,21 +4,18 @@ import org.example.model.Users;
 import org.example.model.UsersAddress;
 import org.hibernate.query.Query;
 import java.util.List;
+import java.util.logging.Logger;
 
-public class WorkWithBase implements Pdu {
+public class WorkWithBase extends SessionBase {
+
+    private static Logger logger = Logger.getLogger("util.WorkWithBase");
 
     public void selectUserById(int number) {
         try {
             session.beginTransaction();
             Users user = session.get(Users.class, number);
-            System.out.println("Выбран пользователь с id: " + number);
-            int age = user.getAge();
-            String first = user.getFirstName();
-            String last = user.getLastName();
-
-            System.out.print("firstName: " + first);
-            System.out.print(", lastName: " + last);
-            System.out.println(", age: " + age);
+            logger.info("Выбран пользователь с id: " + number);
+            System.out.println(user.toString());
             session.getTransaction().commit();
         } catch (Throwable e){
             session.getTransaction().rollback();
@@ -33,7 +30,7 @@ public class WorkWithBase implements Pdu {
         try {
             session.beginTransaction();
             session.save(users);
-            System.out.println("Пользователь добавлен в базу данных.");
+            logger.info("Пользователь добавлен в базу данных.");
             session.getTransaction().commit();
         } catch (Throwable e){
             session.getTransaction().rollback();
@@ -49,14 +46,8 @@ public class WorkWithBase implements Pdu {
             session.beginTransaction();
             Users user = session.get(Users.class, number);
             user.setLastName(name);
-            System.out.println("Имя пользователя с id: " + number + " изменено.");
-            String first = user.getFirstName();
-            String last = user.getLastName();
-            int age = user.getAge();
-
-            System.out.print("firstName: " + first);
-            System.out.print(", lastName: " + last);
-            System.out.println(", age: " + age);
+            logger.info("Имя пользователя с id: " + number + " изменено.");
+            System.out.println(user.toString());
             session.getTransaction().commit();
         } catch (Throwable e){
             session.getTransaction().rollback();
@@ -72,14 +63,8 @@ public class WorkWithBase implements Pdu {
             session.beginTransaction();
             Users user = session.get(Users.class, number);
             session.delete(user);
-            System.out.println("Пользователь с id : " + number + " удален.");
-            String first = user.getFirstName();
-            String last = user.getLastName();
-            int age = user.getAge();
-
-            System.out.print(", firstName: " + first);
-            System.out.print(", lastName: " + last);
-            System.out.println(", age: " + age);
+            logger.info("Пользователь с id : " + number + " удален.");
+            System.out.println(user.toString());
             session.getTransaction().commit();
         } catch (Throwable e){
             session.getTransaction().rollback();
@@ -94,10 +79,10 @@ public class WorkWithBase implements Pdu {
         try {
             session.beginTransaction();
             List<Users> usersList = session.createQuery("FROM Users").getResultList();
-            System.out.println("Показанны все пользователи базы данных.");
             usersList
                     .stream()
                     .forEach(System.out::println);
+            logger.info("Показанны все пользователи базы данных.");
             session.getTransaction().commit();
         } catch (Throwable e){
             session.getTransaction().rollback();
@@ -112,7 +97,7 @@ public class WorkWithBase implements Pdu {
         try {
             session.beginTransaction();
             session.createQuery("DELETE FROM Users").executeUpdate();
-            System.out.println("Удаленны все пользователи базы данных.");
+            logger.info("Удаленны все пользователи базы данных.");
             session.getTransaction().commit();
         } catch (Throwable e){
             session.getTransaction().rollback();
@@ -123,12 +108,12 @@ public class WorkWithBase implements Pdu {
         }
     }
 
-    public void addingUsersAddress(Users users, UsersAddress usersAddress){
+    public void addingUsersAddress(UsersAddress usersAddress, int number){
         try {
             session.beginTransaction();
-            session.save(users);
-            System.out.println("Пользователь и адресс пользователя добавлены в базу данных.");
+            Users users = session.get(Users.class, number);
             users.setUsersAddress(usersAddress);
+            logger.info("адресс пользователя добавлены в базу данных.");
             session.getTransaction().commit();
         } catch (Throwable e){
             session.getTransaction().rollback();

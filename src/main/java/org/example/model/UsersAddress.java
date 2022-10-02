@@ -1,13 +1,15 @@
 package org.example.model;
 
 import jakarta.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "users_address")
-public class UsersAddress implements Serializable {
+public class UsersAddress {
 
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     @OneToOne
     @JoinColumn(name = "users_id", referencedColumnName = "id")
     private Users users;
@@ -23,7 +25,7 @@ public class UsersAddress implements Serializable {
 
     public UsersAddress(){}
 
-    public UsersAddress(String city, String street, int house) {
+    public UsersAddress(Users users, String city, String street, int house) {
         this.users = users;
         this.city = city;
         this.street = street;
@@ -36,6 +38,14 @@ public class UsersAddress implements Serializable {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCity() {
@@ -65,7 +75,8 @@ public class UsersAddress implements Serializable {
     @Override
     public String toString() {
         return "UsersAddress{" +
-                "users=" + users +
+                "id=" + id +
+                ", users=" + users +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", house=" + house +
